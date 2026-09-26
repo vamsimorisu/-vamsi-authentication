@@ -1,0 +1,38 @@
+name: Auth service deploy
+
+on:
+  push:
+    branches: [develop, main]
+  workflow_call:
+    inputs:
+      environment:
+        required: false
+        type: string
+        default: dev
+      runner:
+        required: false
+        type: string
+        default: ubuntu-latest
+      image-tag:
+        required: false
+        type: string
+        default: latest
+      api-url:
+        required: false
+        type: string
+        default: https://dev-api.vamsi-authentication.local
+      backend-image-name:
+        required: false
+        type: string
+        default: vamsi-authentication-backend
+
+jobs:
+  deploy:
+    uses: my-org/platform-workflows/.github/workflows/build.yaml@main
+    with:
+      environment: ${{ inputs.environment || 'dev' }}
+      runner: ${{ inputs.runner || 'ubuntu-latest' }}
+      image-tag: ${{ inputs.image-tag || github.sha }}
+      api-url: ${{ inputs.api-url || 'https://dev-api.vamsi-authentication.local' }}
+      backend-image-name: ${{ inputs.backend-image-name || 'vamsi-authentication-backend' }}
+    secrets: inherit
