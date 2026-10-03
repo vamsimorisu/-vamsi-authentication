@@ -1,38 +1,25 @@
-name: Auth service deploy
+name: CI/CD
 
 on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited, labeled, unlabeled, ready_for_review]
   push:
-    branches: [develop, main]
-  workflow_call:
-    inputs:
-      environment:
-        required: false
-        type: string
-        default: dev
-      runner:
-        required: false
-        type: string
-        default: ubuntu-latest
-      image-tag:
-        required: false
-        type: string
-        default: latest
-      api-url:
-        required: false
-        type: string
-        default: https://dev-api.vamsi-authentication.local
-      backend-image-name:
-        required: false
-        type: string
-        default: vamsi-authentication-backend
+    branches: [main,develop]
+    tags: ["v*"]
+
+# The reusable workflow can never exceed these, so callers must grant them.
+permissions:
+  contents: read
+  pull-requests: write
+  packages: write
+  id-token: write
+  security-events: write
 
 jobs:
-  deploy:
-    uses: my-org/platform-workflows/.github/workflows/build.yaml@main
+  pipeline:
+    uses: vamsimorisu/platform-workflows/.github/workflows/ci-cd.yml@v1
     with:
-      environment: ${{ inputs.environment || 'dev' }}
-      runner: ${{ inputs.runner || 'ubuntu-latest' }}
-      image-tag: ${{ inputs.image-tag || github.sha }}
-      api-url: ${{ inputs.api-url || 'https://dev-api.vamsi-authentication.local' }}
-      backend-image-name: ${{ inputs.backend-image-name || 'vamsi-authentication-backend' }}
+      language: python
+      docker-enabled: true
+      deploy-enabled: false
     secrets: inherit
