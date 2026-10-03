@@ -20,6 +20,4 @@ jobs:
     uses: vamsimorisu/platform-workflows/.github/workflows/ci.yml@develop
     with:
       language: python
-      docker-enabled: true
-      deploy-enabled: false
     secrets: inherit
